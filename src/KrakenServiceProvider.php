@@ -35,9 +35,9 @@ class KrakenServiceProvider extends ServiceProvider
 
             return new Client(
                 new HttpClient(),
-                $config['key'] ?: null,
-                $config['secret'] ?: null,
-                $config['otp'] ?: null
+                $config['key'] ?? null,
+                $config['secret'] ?? null,
+                $config['otp'] ?? null
             );
         });
     }

@@ -48,7 +48,7 @@ class Order implements Arrayable
      */
     public function status()
     {
-        return $this->information['status'] ?: null;
+        return $this->information['status'] ?? null;
     }
 
     /**
@@ -56,7 +56,7 @@ class Order implements Arrayable
      */
     public function volume(): float
     {
-        return $this->information['vol'] ?: 0.0;
+        return $this->information['vol'] ?? 0.0;
     }
 
     /**
@@ -64,7 +64,7 @@ class Order implements Arrayable
      */
     public function price(): float
     {
-        return $this->information['price'] ?: 0.0;
+        return $this->information['price'] ?? 0.0;
     }
 
     /**
@@ -72,7 +72,7 @@ class Order implements Arrayable
      */
     public function cost(): float
     {
-        return $this->information['cost'] ?: 0.0;
+        return $this->information['cost'] ?? 0.0;
     }
 
     /**

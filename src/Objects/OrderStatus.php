@@ -23,8 +23,8 @@ class OrderStatus
         $this->transactionId = $transactionId;
 
         $this->description = new OrderStatusDescription(
-            $descriptions['order'] ?: null,
-            $descriptions['close'] ?: null
+            $descriptions['order'] ?? null,
+            $descriptions['close'] ?? null
         );
     }
 
