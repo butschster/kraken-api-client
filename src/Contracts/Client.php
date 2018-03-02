@@ -3,7 +3,7 @@
 namespace Butschster\Kraken\Contracts;
 
 use Butschster\Kraken\Objects\{
-    BalanceCollection, Balance, OrdersCollection, Pair, OrderStatus, PairCollection
+    BalanceCollection, Balance, OrdersCollection, Pair, OrderStatus, PairCollection, Ticker, TickerCollection
 };
 use Butschster\Kraken\Exceptions\KrakenApiErrorException;
 use Carbon\Carbon;
@@ -24,6 +24,15 @@ interface Client
      * @throws KrakenApiErrorException
      */
     public function getAssetPairs($pair = null, string $info = 'info'): PairCollection;
+
+    /**
+     * Get ticker information
+     *
+     * @param string|array $pair comma delimited list of asset pairs to get info on
+     * @return TickerCollection|Ticker[]
+     * @throws KrakenApiErrorException
+     */
+    public function getTicker($pair): TickerCollection;
 
     /**
      * Make API call

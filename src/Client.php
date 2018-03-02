@@ -5,7 +5,7 @@ namespace Butschster\Kraken;
 use Butschster\Kraken\Contracts\Order as OrderContract;
 use Butschster\Kraken\Exceptions\KrakenApiErrorException;
 use Butschster\Kraken\Objects\{
-    Balance, BalanceCollection, OrdersCollection, OrderStatus, Pair, PairCollection
+    Balance, BalanceCollection, OrdersCollection, OrderStatus, Pair, PairCollection, Ticker, TickerCollection
 };
 use Carbon\Carbon;
 use GuzzleHttp\ClientInterface as HttpClient;
@@ -80,6 +80,26 @@ class Client implements Contracts\Client
 
         return (new PairCollection($result))->map(function ($information, $pair) {
             return new Pair($pair, $information);
+        });
+    }
+
+    /**
+     * Get ticker information
+     *
+     * @param string|array $pair comma delimited list of asset pairs to get info on
+     * @return TickerCollection|Ticker[]
+     * @throws KrakenApiErrorException
+     */
+    public function getTicker($pair): TickerCollection
+    {
+        if (is_array($pair)) {
+            $pair = implode(',', $pair);
+        }
+
+        $result = $this->request('Ticker', ['pair' => $pair]);
+
+        return (new TickerCollection($result))->map(function ($information, $pair) {
+            return new Ticker($pair, $information);
         });
     }
 

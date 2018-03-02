@@ -25,6 +25,8 @@ class Pair
     }
 
     /**
+     * Pair name
+     *
      * @return string
      */
     public function name(): string
@@ -33,10 +35,41 @@ class Pair
     }
 
     /**
+     * Alternate pair name
+     *
      * @return string
      */
     public function altname(): string
     {
         return $this->information['altname'];
+    }
+
+    /**
+     * Asset id of base component
+     *
+     * @return string
+     */
+    public function base(): string
+    {
+        return $this->information['base'];
+    }
+
+    /**
+     * Asset id of quote component
+     * @return string
+     */
+    public function quote(): string
+    {
+        return $this->information['quote'];
+    }
+
+    /**
+     * Volume lot size
+     *
+     * @return string
+     */
+    public function lot(): string
+    {
+        return $this->information['lot'];
     }
 }
