@@ -102,6 +102,22 @@ foreach($pairs as $pair) {
 }
 ```
 
+#### Get ticker information
+https://www.kraken.com/help/api#get-ticker-info
+
+```php
+$pairs = $client->getTicker(string|array $pair) : Butschster\Kraken\Objects\TickerCollection;
+
+foreach($pairs as $pair) {
+    $pair->name();
+    $pair->askPrice();
+    $pair->askWholeLotVolume();
+    $pair->askLotVolume();
+    $pair->askLotVolume();
+    ...
+}
+```
+
 #### Get account balance
 https://www.kraken.com/help/api#get-account-balance
 
