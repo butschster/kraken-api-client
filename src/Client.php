@@ -73,6 +73,10 @@ class Client implements Contracts\Client
     {
         $data = ['info' => $info];
         if ($pair) {
+            if (is_array($pair)) {
+                $pair = implode(',', $pair);
+            }
+
             $data['pair'] = $pair;
         }
 
