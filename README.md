@@ -75,6 +75,36 @@ class BalanceConstroller extends Controller {
 }
 ```
 
+### Checking minimal volume size
+
+See https://support.kraken.com/hc/en-us/articles/205893708-What-is-the-minimum-order-size-
+
+#### Check minimal order size for pair
+```php
+$orderVolume = new \Butschster\Kraken\OrderVolume;
+$pair = $client->getAssetPairs('EOSETH')->first();
+$isValidSize = $orderVolume->checkMinimalSizeForPair($pair, 1.1);
+```
+
+#### Check minimal order size for currency
+```php
+$orderVolume = new \Butschster\Kraken\OrderVolume;
+$isValidSize = $orderVolume->checkMinimalSizeForPair('EOS', 1.1);
+```
+
+#### Get minimal order size
+```php
+$orderVolume = new \Butschster\Kraken\OrderVolume;
+
+// Pair
+$pair = $client->getAssetPairs('EOSETH')->first();
+$minimalsize = $orderVolume->getMinimalSizeForPair($pair);
+
+// Currency
+$minimalsize = $orderVolume->getMinimalSize('EOS');
+```
+
+
 ### API methods
 
 #### Make request
