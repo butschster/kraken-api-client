@@ -2,6 +2,8 @@
 
 namespace Butschster\Kraken\Objects;
 
+use Illuminate\Support\Arr;
+
 class Ticker
 {
     /**
@@ -16,7 +18,7 @@ class Ticker
 
     /**
      * @param string $pair
-     * @param array $data
+     * @param array  $data
      */
     public function __construct(string $pair, array $data)
     {
@@ -33,116 +35,122 @@ class Ticker
     }
 
     /**
-     * Ask price
+     * Ask price.
+     *
      * @return mixed
      */
     public function askPrice(): float
     {
-        return (float) array_get($this->data, 'a.0', 0);
+        return (float) Arr::get($this->data, 'a.0', 0);
     }
 
     /**
-     * Ask whole lot volume
+     * Ask whole lot volume.
+     *
      * @return mixed
      */
     public function askWholeLotVolume(): float
     {
-        return (float) array_get($this->data, 'a.1', 0);
+        return (float) Arr::get($this->data, 'a.1', 0);
     }
 
     /**
-     * Ask lot volume
+     * Ask lot volume.
+     *
      * @return mixed
      */
     public function askLotVolume(): float
     {
-        return (float) array_get($this->data, 'a.2', 0);
+        return (float) Arr::get($this->data, 'a.2', 0);
     }
 
     /**
-     * Bid price
+     * Bid price.
+     *
      * @return mixed
      */
     public function bidPrice(): float
     {
-        return (float) array_get($this->data, 'b.0', 0);
+        return (float) Arr::get($this->data, 'b.0', 0);
     }
 
     /**
-     * Bid whole lot volume
+     * Bid whole lot volume.
+     *
      * @return mixed
      */
     public function bidWholeLotVolume(): float
     {
-        return (float) array_get($this->data, 'b.1', 0);
+        return (float) Arr::get($this->data, 'b.1', 0);
     }
 
     /**
-     * Bid lot volume
+     * Bid lot volume.
+     *
      * @return mixed
      */
     public function bidLotVolume(): float
     {
-        return (float) array_get($this->data, 'b.2', 0);
+        return (float) Arr::get($this->data, 'b.2', 0);
     }
 
     /**
-     * Last trade closed price
+     * Last trade closed price.
      *
      * @return float
      */
     public function lastClosedPrice(): float
     {
-        return (float) array_get($this->data, 'c.0', 0);
+        return (float) Arr::get($this->data, 'c.0', 0);
     }
 
     /**
-     * Last trade closed price
+     * Last trade closed price.
      *
      * @return float
      */
     public function lastLotVolume(): float
     {
-        return (float) array_get($this->data, 'c.1', 0);
+        return (float) Arr::get($this->data, 'c.1', 0);
     }
 
     /**
-     * Today volume
+     * Today volume.
      *
      * @return float
      */
     public function volumeToday(): float
     {
-        return (float) array_get($this->data, 'v.0', 0);
+        return (float) Arr::get($this->data, 'v.0', 0);
     }
 
     /**
-     * Last 24 hours volume
+     * Last 24 hours volume.
      *
      * @return float
      */
     public function volumePrevious(): float
     {
-        return (float) array_get($this->data, 'v.1', 0);
+        return (float) Arr::get($this->data, 'v.1', 0);
     }
 
     /**
-     * Today volume weighted average price
+     * Today volume weighted average price.
      *
      * @return float
      */
     public function avgPriceVolumeToday(): float
     {
-        return (float) array_get($this->data, 'p.0', 0);
+        return (float) Arr::get($this->data, 'p.0', 0);
     }
 
     /**
-     * Last 24 volume weighted average price
+     * Last 24 volume weighted average price.
      *
      * @return float
      */
     public function avgPriceVolumPrevious(): float
     {
-        return (float) array_get($this->data, 'v.1', 0);
+        return (float) Arr::get($this->data, 'v.1', 0);
     }
 }
