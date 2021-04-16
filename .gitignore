@@ -1,10 +1,6 @@
 .vscode
+.idea
 composer.phar
 /vendor/
 .env
 .phpunit.result.cache
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
