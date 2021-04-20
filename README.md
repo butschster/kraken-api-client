@@ -1,5 +1,11 @@
 # Kraken.com exchange API, PHP 7 package.
 
+[![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dbutschster%26type%3Dpatrons&style=flat)](https://patreon.com/butschster)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/butschster/kraken-api-client)](https://packagist.org/packages/butschster/kraken-api-client)
+[![License](https://poser.pugx.org/butschster/meta-tags/license)](https://packagist.org/packages/butschster/kraken-api-client)
+
+
+
 ## Installation
 
 Require this package with composer using the following command:
