@@ -2,6 +2,8 @@
 
 namespace Butschster\Kraken\Objects;
 
+use Illuminate\Support\Arr;
+
 class Ticker
 {
     /**
@@ -38,7 +40,7 @@ class Ticker
      */
     public function askPrice(): float
     {
-        return (float) array_get($this->data, 'a.0', 0);
+        return (float) Arr::get($this->data, 'a.0', 0);
     }
 
     /**
@@ -47,7 +49,7 @@ class Ticker
      */
     public function askWholeLotVolume(): float
     {
-        return (float) array_get($this->data, 'a.1', 0);
+        return (float) Arr::get($this->data, 'a.1', 0);
     }
 
     /**
@@ -56,7 +58,7 @@ class Ticker
      */
     public function askLotVolume(): float
     {
-        return (float) array_get($this->data, 'a.2', 0);
+        return (float) Arr::get($this->data, 'a.2', 0);
     }
 
     /**
@@ -65,7 +67,7 @@ class Ticker
      */
     public function bidPrice(): float
     {
-        return (float) array_get($this->data, 'b.0', 0);
+        return (float) Arr::get($this->data, 'b.0', 0);
     }
 
     /**
@@ -74,7 +76,7 @@ class Ticker
      */
     public function bidWholeLotVolume(): float
     {
-        return (float) array_get($this->data, 'b.1', 0);
+        return (float) Arr::get($this->data, 'b.1', 0);
     }
 
     /**
@@ -83,7 +85,7 @@ class Ticker
      */
     public function bidLotVolume(): float
     {
-        return (float) array_get($this->data, 'b.2', 0);
+        return (float) Arr::get($this->data, 'b.2', 0);
     }
 
     /**
@@ -93,7 +95,7 @@ class Ticker
      */
     public function lastClosedPrice(): float
     {
-        return (float) array_get($this->data, 'c.0', 0);
+        return (float) Arr::get($this->data, 'c.0', 0);
     }
 
     /**
@@ -103,7 +105,7 @@ class Ticker
      */
     public function lastLotVolume(): float
     {
-        return (float) array_get($this->data, 'c.1', 0);
+        return (float) Arr::get($this->data, 'c.1', 0);
     }
 
     /**
@@ -113,7 +115,7 @@ class Ticker
      */
     public function volumeToday(): float
     {
-        return (float) array_get($this->data, 'v.0', 0);
+        return (float) Arr::get($this->data, 'v.0', 0);
     }
 
     /**
@@ -123,7 +125,7 @@ class Ticker
      */
     public function volumePrevious(): float
     {
-        return (float) array_get($this->data, 'v.1', 0);
+        return (float) Arr::get($this->data, 'v.1', 0);
     }
 
     /**
@@ -133,7 +135,7 @@ class Ticker
      */
     public function avgPriceVolumeToday(): float
     {
-        return (float) array_get($this->data, 'p.0', 0);
+        return (float) Arr::get($this->data, 'p.0', 0);
     }
 
     /**
@@ -143,6 +145,6 @@ class Ticker
      */
     public function avgPriceVolumPrevious(): float
     {
-        return (float) array_get($this->data, 'v.1', 0);
+        return (float) Arr::get($this->data, 'v.1', 0);
     }
 }
