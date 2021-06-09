@@ -1,7 +1,9 @@
+![kraken](https://user-images.githubusercontent.com/773481/121415892-dc088c80-c970-11eb-9ce2-66de76749a44.jpg)
+
 # A PHP\Laravel package for interfacing with the Kraken REST API (kraken.com). Built on PHP8.0
 
-This is the unofficial Kraken.com PHP8.0. package, which should help users very quickly connect to API from their PHP\Laravel projects.
-Of course, the primary feature of this package is the ability to interact with REST API, but also it allows connecting to Websocket server.
+This is an unofficial Kraken.com PHP8.0 package, which should help users very quickly connect to API from their Laravel or other php project.
+Of course, the primary feature of this package is the ability to interact with [Kraken REST API](https://docs.kraken.com/rest/), but also it allows connecting to [Kraken Websocket server](https://docs.kraken.com/websockets/).
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dbutschster%26type%3Dpatrons&style=flat)](https://patreon.com/butschster)
 [![Build Status](https://travis-ci.org/butschster/kraken-api-client.svg)](https://travis-ci.org/butschster/kraken-api-client)
@@ -25,14 +27,12 @@ Require this package with composer using the following command:
 
 ## Using
 
-### Laravel
+### Laravel 8.0+
+If you're using Laravel 8.0 or above, the package will automatically register the KrakenServiceProvider.
 
-#### Laravel 8.0+
-If you're using Laravel 8.0 or above, the package will automatically register the Kraken provider.
+### Other PHP frameworks
 
-#### Other PHP frameworks
-
-REST API client
+**REST API client**
 ```php
 
 $client = new \Butschster\Kraken\Client(
@@ -51,7 +51,7 @@ $client = new \Butschster\Kraken\Client(
 $client->getAccountBalance();
 ```
 
-Websocket client
+**Websocket client**
 ```php
 
 $client = new \Butschster\Kraken\WebsocketClient(
@@ -137,7 +137,7 @@ See: https://docs.kraken.com/rest/#operation/getSystemStatus
 /** @var \Butschster\Kraken\Contracts\Client $client */
 $response = $client->getSystemStatus();
 
-$response->status; // string:":"online"
+$response->status; // string:"online"
 $response->timestamp; // DateTimeImmutable
 ```
 
@@ -678,3 +678,5 @@ $client->connectToPrivateServer('token', function (Connection $connection) {
     );
 });
 ```
+
+# Enjoy!
