@@ -1,0 +1,124 @@
+<?php
+declare(strict_types=1);
+
+namespace Butschster\Kraken\Responses\Entities;
+
+use Brick\Math\BigDecimal;
+use Butschster\Kraken\Responses\Entities\TickerInformation\LotPrice;
+use Butschster\Kraken\Responses\Entities\TickerInformation\Price;
+use Butschster\Kraken\Responses\Entities\TickerInformation\Trades;
+use Butschster\Kraken\Responses\Entities\TickerInformation\Volume;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Accessor;
+
+class TickerInformation
+{
+    /**
+     * @Type("array<string>")
+     * @SerializedName("a")
+     * @Accessor(setter="setAsk")
+     */
+    public LotPrice $ask;
+
+    /**
+     * @Type("array<string>")
+     * @SerializedName("b")
+     * @Accessor(setter="setBid")
+     */
+    public LotPrice $bid;
+
+    /**
+     * @Type("string")
+     * @Accessor(setter="setOpeningPrice")
+     * @SerializedName("o")
+     */
+    public BigDecimal $openingPrice;
+
+    /**
+     * Last trade closed [<price>, <lot volume>]
+     * @SerializedName("c")
+     * @Type("array<string>")
+     */
+    public array $lastTradeClosed = [];
+
+    /**
+     * Volume [<today>, <last 24 hours>]
+     * @SerializedName("v")
+     * @Accessor(setter="setVolume")
+     * @Type("array<string>")
+     */
+    public Volume $volume;
+
+    /**
+     * Volume weighted average price [<today>, <last 24 hours>]
+     * @SerializedName("p")
+     * @Accessor(setter="setVolumeWightedAveragePrice")
+     * @Type("array<string>")
+     */
+    public Volume $volumeWightedAveragePrice;
+
+    /**
+     * Number of trades [<today>, <last 24 hours>]
+     * @SerializedName("t")
+     * @Accessor(setter="setTrades")
+     * @Type("array<int>")
+     */
+    public Trades $trades;
+
+    /**
+     * Low [<today>, <last 24 hours>]
+     * @SerializedName("l")
+     * @Type("array<string>")
+     * @Accessor(setter="setLow")
+     */
+    public Price $low;
+
+    /**
+     * High [<today>, <last 24 hours>]
+     * @SerializedName("h")
+     * @Type("array<string>")
+     * @Accessor(setter="setHigh")
+     */
+    public Price $high;
+
+    public function setAsk(array $ask): void
+    {
+        $this->ask = new LotPrice(...$ask);
+    }
+
+    public function setBid(array $bid): void
+    {
+        $this->bid = new LotPrice(...$bid);
+    }
+
+    public function setOpeningPrice(string $openingPrice): void
+    {
+        $this->openingPrice = BigDecimal::of($openingPrice);
+    }
+
+    public function setVolume(array $volume): void
+    {
+        $this->volume = new Volume(...$volume);
+    }
+
+    public function setVolumeWightedAveragePrice(array $volume): void
+    {
+        $this->volumeWightedAveragePrice = new Volume(...$volume);
+    }
+
+    public function setTrades(array $trades): void
+    {
+        $this->trades = new Trades(...$trades);
+    }
+
+    public function setLow(array $low): void
+    {
+        $this->low = new Price(...$low);
+    }
+
+    public function setHigh(array $high): void
+    {
+        $this->high = new Price(...$high);
+    }
+}
