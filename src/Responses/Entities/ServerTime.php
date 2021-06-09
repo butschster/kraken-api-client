@@ -3,22 +3,21 @@ declare(strict_types=1);
 
 namespace Butschster\Kraken\Responses\Entities;
 
-use Carbon\Carbon;
+use DateTimeInterface;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\SerializedName;
 
 class ServerTime
 {
     /**
      * Unix timestamp
+     * @SerializedName("unixtime")
+     * @Type("Timestamp")
      */
-    public int $unixtime = 0;
+    public DateTimeInterface $time;
 
     /**
      * RFC 1123 time format
      */
     public string $rfc1123;
-
-    public function time(): \DateTimeInterface
-    {
-        return Carbon::createFromTimestamp($this->unixtime);
-    }
 }

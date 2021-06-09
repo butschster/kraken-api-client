@@ -27,5 +27,4 @@ EOL;
         $this->assertTrue($response->isOnline());
         $this->assertEquals('2021-03-21T15:33:02+00:00', $response->timestamp->format(DATE_RFC3339));
     }
-
 }

@@ -2,8 +2,11 @@
 
 namespace Butschster\Kraken;
 
+use Butschster\Kraken\Serializer\BigDecimalHandler;
+use Butschster\Kraken\Serializer\SerializerFactory;
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Support\ServiceProvider;
+use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializerBuilder;
@@ -31,7 +34,7 @@ class KrakenServiceProvider extends ServiceProvider
             return new Client(
                 new HttpClient(),
                 new NonceGenerator(),
-                $this->createSerializer(),
+                (new SerializerFactory())->build(),
                 $config['key'] ?? null,
                 $config['secret'] ?? null,
                 $config['otp'] ?? null
@@ -42,20 +45,10 @@ class KrakenServiceProvider extends ServiceProvider
             $config = $this->app->make('config')->get('kraken', []);
 
             return new WebsocketClient(
-                $this->createSerializer(),
+                (new SerializerFactory())->build(),
                 Factory::create(),
                 $config['websocket_headers'] ?? []
             );
         });
-    }
-
-    private function createSerializer(): SerializerInterface
-    {
-        return SerializerBuilder::create()
-            ->setPropertyNamingStrategy(
-                new SerializedNameAnnotationStrategy(
-                    new IdenticalPropertyNamingStrategy()
-                )
-            )->build();
     }
 }

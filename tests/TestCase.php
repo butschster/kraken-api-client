@@ -5,6 +5,7 @@ namespace Kraken\Tests;
 
 use Butschster\Kraken\Client;
 use Butschster\Kraken\Contracts\NonceGenerator;
+use Butschster\Kraken\Serializer\SerializerFactory;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -15,16 +16,6 @@ use Mockery as m;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected function createSerializer(): SerializerInterface
-    {
-        return SerializerBuilder::create()
-            ->setPropertyNamingStrategy(
-                new SerializedNameAnnotationStrategy(
-                    new IdenticalPropertyNamingStrategy()
-                )
-            )->build();
-    }
-
     public function createClient(string $urlWithQueryString, string $json): Client
     {
         $http = m::mock(ClientInterface::class);
@@ -45,7 +36,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $nonce = m::mock(NonceGenerator::class);
         $nonce->shouldReceive('generate')->andReturn(1234567890);
 
-        return new Client($http, $nonce, $this->createSerializer(), 'api-key', 'api-secret');
+        return new Client(
+            $http,
+            $nonce,
+            (new SerializerFactory())->build(),
+            'api-key',
+            'api-secret'
+        );
     }
 
     protected function tearDown(): void

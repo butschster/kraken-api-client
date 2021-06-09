@@ -24,9 +24,8 @@ EOL;
             'https://api.kraken.com/0/public/Time', $json
         )->getServerTime();
 
-        $this->assertEquals(1616336594, $response->unixtime);
+        $this->assertEquals('2021-03-21 14:23:14', $response->time->format('Y-m-d H:i:s'));
         $this->assertEquals('Sun, 21 Mar 21 14:23:14 +0000', $response->rfc1123);
-        $this->assertEquals('2021-03-21 14:23:14', $response->time()->format('Y-m-d H:i:s'));
     }
 
     function test_error_response()

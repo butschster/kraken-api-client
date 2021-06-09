@@ -31,16 +31,14 @@ class OrderDescription
 
     /**
      * Primary price
-     * @Type("string")
-     * @Accessor(setter="setPrice")
+     * @Type("BigDecimal")
      */
     public BigDecimal $price;
 
     /**
      * Secondary price
-     * @Type("string")
+     * @Type("BigDecimal")
      * @SerializedName("price2")
-     * @Accessor(setter="setSecondaryPrice")
      */
     public BigDecimal $secondaryPrice;
 
@@ -62,14 +60,4 @@ class OrderDescription
      * @SerializedName("close")
      */
     public string $close = '';
-
-    public function setPrice(string $price): void
-    {
-        $this->price = BigDecimal::of($price);
-    }
-
-    public function setSecondaryPrice(string $price): void
-    {
-        $this->secondaryPrice = BigDecimal::of($price);
-    }
 }

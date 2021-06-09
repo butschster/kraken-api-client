@@ -13,117 +13,63 @@ class TradeBalance
     /**
      * Equivalent balance (combined balance of all currencies)
      * @SerializedName("eb")
-     * @Accessor(setter="setEquivalentBalance")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $equivalentBalance;
 
     /**
      * Trade balance (combined balance of all equity currencies)
      * @SerializedName("tb")
-     * @Accessor(setter="setTradeBalance")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $tradeBalance;
 
     /**
      * Margin amount of open positions
      * @SerializedName("m")
-     * @Accessor(setter="setMarginAmount")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $marginAmount;
 
     /**
      * Unrealized net profit/loss of open positions
      * @SerializedName("n")
-     * @Accessor(setter="setNet")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $net;
 
     /**
      * Cost basis of open positions
      * @SerializedName("c")
-     * @Accessor(setter="setCost")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $cost;
 
     /**
      * Current floating valuation of open positions
      * @SerializedName("v")
-     * @Accessor(setter="setValuation")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $valuation;
 
     /**
      * Equity: trade balance + unrealized net profit/loss
      * @SerializedName("e")
-     * @Accessor(setter="setEquity")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $equity;
 
     /**
      * Free margin: Equity - initial margin (maximum margin available to open new positions)
      * @SerializedName("mf")
-     * @Accessor(setter="setFreeMargin")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $freeMargin;
 
     /**
      * Margin level: (equity / initial margin) * 100
      * @SerializedName("ml")
-     * @Accessor(setter="setMarginLevel")
-     * @Type("string")
+     * @Type("BigDecimal")
      */
     public BigDecimal $marginLevel;
-
-    public function setEquivalentBalance(string $balance): void
-    {
-        $this->equivalentBalance = BigDecimal::of($balance);
-    }
-
-    public function setTradeBalance(string $balance): void
-    {
-        $this->tradeBalance = BigDecimal::of($balance);
-    }
-
-    public function setMarginAmount(string $amount): void
-    {
-        $this->marginAmount = BigDecimal::of($amount);
-    }
-
-    public function setNet(string $amount): void
-    {
-        $this->net = BigDecimal::of($amount);
-    }
-
-    public function setCost(string $cost): void
-    {
-        $this->cost = BigDecimal::of($cost);
-    }
-
-    public function setValuation(string $amount): void
-    {
-        $this->valuation = BigDecimal::of($amount);
-    }
-
-    public function setEquity(string $amount): void
-    {
-        $this->equity = BigDecimal::of($amount);
-    }
-
-    public function setFreeMargin(string $amount): void
-    {
-        $this->freeMargin = BigDecimal::of($amount);
-    }
-
-    public function setMarginLevel(string $amount): void
-    {
-        $this->marginLevel = BigDecimal::of($amount);
-    }
 }

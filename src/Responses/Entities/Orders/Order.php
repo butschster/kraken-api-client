@@ -78,69 +78,60 @@ class Order
 
     /**
      * Volume of order (base currency)
-     * @Type("string")
-     * @Accessor(setter="setVolume")
+     * @Type("BigDecimal")
      * @SerializedName("vol")
      */
     public BigDecimal $volume;
 
     /**
      * Volume executed (base currency)
-     * @Type("string")
-     * @Accessor(setter="setVolumeExecuted")
+     * @Type("BigDecimal")
      * @SerializedName("vol_exec")
      */
     public BigDecimal $volumeExecuted;
 
     /**
      * Total cost (quote currency unless)
-     * @Type("string")
-     * @Accessor(setter="setCost")
+     * @Type("BigDecimal")
      */
     public BigDecimal $cost;
 
     /**
      * Total fee (quote currency)
-     * @Type("string")
-     * @Accessor(setter="setFee")
+     * @Type("BigDecimal")
      */
     public BigDecimal $fee;
 
     /**
      * Average price (quote currency)
-     * @Type("string")
-     * @Accessor(setter="setPrice")
+     * @Type("BigDecimal")
      */
     public BigDecimal $price;
 
     /**
      * Stop price (quote currency)
-     * @Type("string")
-     * @Accessor(setter="setStopPrice")
+     * @Type("BigDecimal")
      * @SerializedName("stopprice")
      */
     public BigDecimal $stopPrice;
 
     /**
      * Triggered limit price (quote currency, when limit based order type triggered)
-     * @Type("string")
-     * @Accessor(setter="setLimitPrice")
+     * @Type("BigDecimal")
      * @SerializedName("limitprice")
      */
     public BigDecimal $limitPrice;
 
     /**
      * List of miscellaneous info
-     * @Type("string")
-     * @Accessor(setter="setMiscellaneous")
+     * @Type("ComaSeparated")
      * @SerializedName("misc")
      */
     public array $miscellaneous = [];
 
     /**
      * List of order flags
-     * @Type("string")
-     * @Accessor(setter="setFlags")
+     * @Type("ComaSeparated")
      * @SerializedName("oflags")
      */
     public array $flags = [];
@@ -150,49 +141,4 @@ class Order
      * @Type("array<string>")
      */
     public array $trades = [];
-
-    public function setVolume(string $volume): void
-    {
-        $this->volume = BigDecimal::of($volume);
-    }
-
-    public function setVolumeExecuted(string $volume): void
-    {
-        $this->volumeExecuted = BigDecimal::of($volume);
-    }
-
-    public function setCost(string $cost): void
-    {
-        $this->cost = BigDecimal::of($cost);
-    }
-
-    public function setFee(string $fee): void
-    {
-        $this->fee = BigDecimal::of($fee);
-    }
-
-    public function setPrice(string $price): void
-    {
-        $this->price = BigDecimal::of($price);
-    }
-
-    public function setStopPrice(string $price): void
-    {
-        $this->stopPrice = BigDecimal::of($price);
-    }
-
-    public function setLimitPrice(string $price): void
-    {
-        $this->limitPrice = BigDecimal::of($price);
-    }
-
-    public function setMiscellaneous(string $miscellaneous): void
-    {
-        $this->miscellaneous = array_filter(explode(',', $miscellaneous));
-    }
-
-    public function setFlags(string $flags): void
-    {
-        $this->flags = array_filter(explode(',', $flags));
-    }
 }

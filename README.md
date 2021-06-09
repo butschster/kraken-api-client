@@ -34,16 +34,10 @@ If you're using Laravel 8.0 or above, the package will automatically register th
 
 **REST API client**
 ```php
-
 $client = new \Butschster\Kraken\Client(
     new GuzzleHttp\Client(),
     new \Butschster\Kraken\NonceGenerator(),
-    \JMS\Serializer\SerializerBuilder::create()
-            ->setPropertyNamingStrategy(
-                new \JMS\Serializer\Naming\SerializedNameAnnotationStrategy(
-                    new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy()
-                )
-            )->build(),
+    (new \Butschster\Kraken\Serializer\SerializerFactory())->build(),
     'api-key',
     'api-secret'
 );
@@ -53,14 +47,8 @@ $client->getAccountBalance();
 
 **Websocket client**
 ```php
-
 $client = new \Butschster\Kraken\WebsocketClient(
-    \JMS\Serializer\SerializerBuilder::create()
-            ->setPropertyNamingStrategy(
-                new \JMS\Serializer\Naming\SerializedNameAnnotationStrategy(
-                    new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy()
-                )
-            )->build(),
+   (new \Butschster\Kraken\Serializer\SerializerFactory())->build(),
    \React\EventLoop\Factory::create()
 );
 
@@ -123,9 +111,8 @@ See: https://docs.kraken.com/rest/#operation/getServerTime
 /** @var \Butschster\Kraken\Contracts\Client $client */
 $response = $client->getServerTime();
 
-$response->unixtime; // int:1616336594
+$response->time; // DateTimeInterface
 $response->rfc1123; // string:"Sun, 21 Mar 21 14:23:14 +0000
-$response->time(); // DateTimeInterface
 ```
 
 ### Get System Status
@@ -533,6 +520,59 @@ $response->currentTime; // DateTimeInterface
 $response->triggerTime; // DateTimeInterface
 ```
 
+### Get Deposit Methods
+Retrieve methods available for depositing a particular asset.
+
+See: https://docs.kraken.com/rest/#operation/getDepositMethods
+
+```php
+/** @var \Butschster\Kraken\Contracts\Client $client */
+
+use Brick\Math\BigDecimal;
+
+$response = $client->getDepositMethods('XBT');
+$response->method; // string:"Bitcoin"
+$response->limit; // int|bool:false
+$response->fee; // BigDecimal
+$response->generatedAddress; // bool:true
+$response->addressSetupFee; // string:""
+```
+
+### Get Deposit Addresses
+Retrieve (or generate a new) deposit addresses for a particular asset and method.
+
+See: https://docs.kraken.com/rest/#operation/getDepositAddresses
+
+```php
+/** @var \Butschster\Kraken\Contracts\Client $client */
+
+$response = $client->getDepositAddresses('XBT', 'Bitcoin');
+
+foreach ($response as $address) {
+    $address->address; // string:"2N9fRkx5JTWXWHmXzZtvhQsufvoYRMq9ExV"
+    $address->expireTimestamp; // int:0
+    $address->new; // bool:true
+}
+```
+
+### Get Withdrawal Information
+Retrieve fee information about potential withdrawals for a particular asset, key and amount.
+
+See: https://docs.kraken.com/rest/#operation/getWithdrawalInformation
+
+```php
+/** @var \Butschster\Kraken\Contracts\Client $client */
+
+use Brick\Math\BigDecimal;
+
+$response = $client->getWithdrawalInformation('XBT', 'btc_testnet_with1', BigDecimal::of(0.725));
+
+$response->method; // string:"Bitcoin"
+$response->limit; // BigDecimal
+$response->amount; // BigDecimal
+$response->fee; // BigDecimal
+```
+
 ### Get Websockets Token
 An authentication token must be requested via this REST API endpoint in order to connect to and authenticate with our Websockets API. The token should be used within 15 minutes of creation, but it does not expire once a successful Websockets connection and private subscription has been made and is maintained.
 
@@ -579,7 +619,7 @@ class ExampleCommand extends Command
 ### Ping
 Client can ping server to determine whether connection is alive, server responds with pong. This is an application level ping as opposed to default ping in websockets standard which is server initiated
 
-@see https://docs.kraken.com/websockets/#message-ping
+See: https://docs.kraken.com/websockets/#message-ping
 
 ```php
 /** @var \Butschster\Kraken\Contracts\WebsocketClient $client */
@@ -607,7 +647,7 @@ $client->connectToPrivateServer('websocket-token', function (Connection $connect
 ### HeartBeat
 Server heartbeat sent if no subscription traffic within 1 second (approximately)
 
-@see https://docs.kraken.com/websockets/#message-heartbeat
+See: https://docs.kraken.com/websockets/#message-heartbeat
 
 ```php
 /** @var \Butschster\Kraken\Contracts\WebsocketClient $client */
@@ -630,7 +670,7 @@ $client->connectToPublicServer(function (Connection $connection) {
 ### Subscribe to an event
 Subscribe to a topic on a single or multiple currency pairs.
 
-@see https://docs.kraken.com/websockets/#message-subscribe
+See: https://docs.kraken.com/websockets/#message-subscribe
 
 ```php
 /** @var \Butschster\Kraken\Contracts\WebsocketClient $client */

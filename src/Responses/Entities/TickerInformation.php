@@ -29,8 +29,7 @@ class TickerInformation
     public LotPrice $bid;
 
     /**
-     * @Type("string")
-     * @Accessor(setter="setOpeningPrice")
+     * @Type("BigDecimal")
      * @SerializedName("o")
      */
     public BigDecimal $openingPrice;
@@ -90,11 +89,6 @@ class TickerInformation
     public function setBid(array $bid): void
     {
         $this->bid = new LotPrice(...$bid);
-    }
-
-    public function setOpeningPrice(string $openingPrice): void
-    {
-        $this->openingPrice = BigDecimal::of($openingPrice);
     }
 
     public function setVolume(array $volume): void

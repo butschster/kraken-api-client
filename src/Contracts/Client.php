@@ -2,10 +2,13 @@
 
 namespace Butschster\Kraken\Contracts;
 
+use Brick\Math\BigDecimal;
 use Butschster\Kraken\Responses\Entities\AccountBalance;
 use Butschster\Kraken\Responses\Entities\AssetInfo;
 use Butschster\Kraken\Responses\Entities\AddOrder\OrderAdded;
 use Butschster\Kraken\Responses\Entities\CancelOrdersAfterTimeout;
+use Butschster\Kraken\Responses\Entities\DepositAddresses;
+use Butschster\Kraken\Responses\Entities\DepositMethods;
 use Butschster\Kraken\Responses\Entities\OrderBook\Orders;
 use Butschster\Kraken\Responses\Entities\Orders\ClosedOrders;
 use Butschster\Kraken\Responses\Entities\Orders\Order;
@@ -15,6 +18,7 @@ use Butschster\Kraken\Responses\Entities\TickerInformation;
 use Butschster\Kraken\Responses\Entities\TradableAsset;
 use Butschster\Kraken\Responses\Entities\TradeBalance;
 use Butschster\Kraken\Responses\Entities\WebsocketToken;
+use Butschster\Kraken\Responses\Entities\WithdrawalInformation;
 use Butschster\Kraken\ValueObjects\AssetClass;
 use Butschster\Kraken\ValueObjects\AssetPair;
 use Butschster\Kraken\ValueObjects\TradableInfo;
@@ -176,4 +180,32 @@ interface Client
      * successful Websockets connection and private subscription has been made and is maintained.
      */
     public function getWebsocketsToken(): WebsocketToken;
+
+    /**
+     * Retrieve methods available for depositing a particular asset.
+     * @see https://docs.kraken.com/rest/#operation/getDepositMethods
+     * @param string $asset Asset being deposited
+     * @return DepositMethods|null
+     */
+    public function getDepositMethods(string $asset): ?DepositMethods;
+
+    /**
+     * Retrieve (or generate a new) deposit addresses for a particular asset and method.
+     * @see https://docs.kraken.com/rest/#operation/getDepositAddresses
+     * @param string $asset Asset being deposited
+     * @param string $method Name of the deposit method
+     * @param bool $new Whether or not to generate a new address
+     * @return DepositAddresses[]
+     */
+    public function getDepositAddresses(string $asset, string $method, bool $new = false): array;
+
+    /**
+     * Retrieve fee information about potential withdrawals for a particular asset, key and amount.
+     * @see https://docs.kraken.com/rest/#operation/getWithdrawalInformation
+     * @param string $asset Asset being withdrawn
+     * @param string $key Withdrawal key name, as set up on your account
+     * @param BigDecimal $amount Amount to be withdrawn
+     * @return WithdrawalInformation
+     */
+    public function getWithdrawalInformation(string $asset, string $key, BigDecimal $amount): WithdrawalInformation;
 }

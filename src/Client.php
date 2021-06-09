@@ -5,6 +5,7 @@ namespace Butschster\Kraken;
 use Butschster\Kraken\Contracts\{
     AddOrderRequest, NonceGenerator, Response
 };
+use Brick\Math\BigDecimal;
 use Butschster\Kraken\Exceptions\KrakenApiErrorException;
 use Butschster\Kraken\Responses\{AccountBalanceResponse,
     AddOrderResponse,
@@ -12,13 +13,17 @@ use Butschster\Kraken\Responses\{AccountBalanceResponse,
     CancelOrderResponse,
     CancelOrdersAfterTimeoutResponse,
     ClosedOrdersResponse,
+    DepositAddressesResponse,
+    DepositMethodsResponse,
     Entities\AddOrder\OrderAdded,
     Entities\CancelOrdersAfterTimeout,
+    Entities\DepositMethods,
     Entities\Orders\ClosedOrders,
     Entities\ServerTime,
     Entities\SystemStatus,
     Entities\TradeBalance,
     Entities\WebsocketToken,
+    Entities\WithdrawalInformation,
     GetWebSocketsTokenResponse,
     OpenOrdersResponse,
     OrderBookResponse,
@@ -27,8 +32,8 @@ use Butschster\Kraken\Responses\{AccountBalanceResponse,
     SystemStatusResponse,
     TickerInformationResponse,
     TradableAssetPairsResponse,
-    TradeBalanceResponse
-};
+    TradeBalanceResponse,
+    WithdrawalInformationResponse};
 use Butschster\Kraken\ValueObjects\{
     AssetClass, AssetPair, TradableInfo
 };
@@ -264,11 +269,49 @@ final class Client implements Contracts\Client
     }
 
     /** @inheritDoc */
+    public function getDepositMethods(string $asset): ?DepositMethods
+    {
+        return $this->request(
+            'private/DepositMethods',
+            DepositMethodsResponse::class,
+            ['asset' => $asset]
+        )->result[0] ?? null;
+    }
+
+    /** @inheritDoc */
+    public function getDepositAddresses(string $asset, string $method, bool $new = false): array
+    {
+        return $this->request(
+            'private/DepositAddresses',
+            DepositAddressesResponse::class,
+            [
+                'asset' => $asset,
+                'method' => $method,
+                'new' => $new
+            ]
+        )->result;
+    }
+
+    /** @inheritDoc */
     public function getWebsocketsToken(): WebsocketToken
     {
         return $this->request(
             'private/GetWebSocketsToken',
             GetWebSocketsTokenResponse::class
+        )->result;
+    }
+
+    /** @inheritDoc */
+    public function getWithdrawalInformation(string $asset, string $key, BigDecimal $amount): WithdrawalInformation
+    {
+        return $this->request(
+            'private/WithdrawInfo',
+            WithdrawalInformationResponse::class,
+            [
+                'asset' => $asset,
+                'key' => $key,
+                'amount' => (string) $amount
+            ]
         )->result;
     }
 
