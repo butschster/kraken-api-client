@@ -1,5 +1,7 @@
 .vscode
+.idea/
 composer.phar
+composer.lock
 /vendor/
 .env
 .phpunit.result.cache

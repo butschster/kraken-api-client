@@ -2,260 +2,327 @@
 
 namespace Butschster\Kraken;
 
-use Butschster\Kraken\Contracts\Order as OrderContract;
-use Butschster\Kraken\Exceptions\KrakenApiErrorException;
-use Butschster\Kraken\Objects\{
-    Balance, BalanceCollection, OrdersCollection, OrderStatus, Pair, PairCollection, Ticker, TickerCollection
+use Butschster\Kraken\Contracts\{
+    AddOrderRequest, NonceGenerator, Response
 };
-use Carbon\Carbon;
+use Butschster\Kraken\Exceptions\KrakenApiErrorException;
+use Butschster\Kraken\Responses\{AccountBalanceResponse,
+    AddOrderResponse,
+    AssetInfoResponse,
+    CancelOrderResponse,
+    CancelOrdersAfterTimeoutResponse,
+    ClosedOrdersResponse,
+    Entities\AddOrder\OrderAdded,
+    Entities\CancelOrdersAfterTimeout,
+    Entities\Orders\ClosedOrders,
+    Entities\ServerTime,
+    Entities\SystemStatus,
+    Entities\TradeBalance,
+    Entities\WebsocketToken,
+    GetWebSocketsTokenResponse,
+    OpenOrdersResponse,
+    OrderBookResponse,
+    QueryOrdersResponse,
+    ServerTimeResponse,
+    SystemStatusResponse,
+    TickerInformationResponse,
+    TradableAssetPairsResponse,
+    TradeBalanceResponse
+};
+use Butschster\Kraken\ValueObjects\{
+    AssetClass, AssetPair, TradableInfo
+};
+use DateTimeInterface;
+use Illuminate\Support\Str;
+use JMS\Serializer\SerializerInterface;
+
 use GuzzleHttp\ClientInterface as HttpClient;
-use Illuminate\Support\Collection;
+use Webmozart\Assert\Assert;
 
-class Client implements Contracts\Client
+final class Client implements Contracts\Client
 {
-    const API_URL = 'https://api.kraken.com';
-    const API_VERSION = 0;
-
-    /**
-     * API key
-     *
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * API secret
-     *
-     * @var string
-     */
-    protected $secret;
-
-    /**
-     * @var HttpClient
-     */
-    protected $client;
-
-    /**
-     * Two-factor password
-     *
-     * @var string
-     */
-    private $otp;
+    private const API_URL = 'https://api.kraken.com';
+    private const API_VERSION = 0;
+    private const API_USER_AGENT = 'Kraken PHP API Agent';
 
     /**
      * @param HttpClient $client
+     * @param NonceGenerator $nonce
+     * @param SerializerInterface $serializer
      * @param string $key API key
      * @param string $secret API secret
      * @param string|null $otp Two-factor password (if two-factor enabled, otherwise not required)
      */
-    public function __construct(HttpClient $client, string $key, string $secret, string $otp = null)
+    public function __construct(
+        private HttpClient $client,
+        private NonceGenerator $nonce,
+        private SerializerInterface $serializer,
+        private string $key,
+        private string $secret,
+        private ?string $otp = null
+    )
     {
-        $this->client = $client;
-        $this->key = $key;
-        $this->secret = $secret;
-        $this->otp = $otp;
     }
 
-    /**
-     * Get tradable asset pairs
-     *
-     * @param string|array $pair
-     * @param string $info Info to retrieve
-     *                      info = all info (default),
-     *                      leverage = leverage info,
-     *                      fees = fees schedule,
-     *                      margin = margin info
-     *
-     * @return PairCollection|Pair[]
-     * @throws KrakenApiErrorException
-     */
-    public function getAssetPairs($pair = null, string $info = 'info'): PairCollection
+    /** @inheritDoc */
+    public function getServerTime(): ServerTime
     {
-        $data = ['info' => $info];
-        if ($pair) {
-            if (is_array($pair)) {
-                $pair = implode(',', $pair);
-            }
+        return $this->request('public/Time', ServerTimeResponse::class)->result;
+    }
 
-            $data['pair'] = $pair;
+    /** @inheritDoc */
+    public function getSystemStatus(): SystemStatus
+    {
+        return $this->request('public/SystemStatus', SystemStatusResponse::class)->result;
+    }
+
+    /** @inheritDoc */
+    public function getAssetInfo(array $assets = ['all'], ?AssetClass $class = null): array
+    {
+        $params = [
+            'asset' => implode(',', $assets)
+        ];
+
+        if ($class) {
+            $params['aclass'] = (string)$class;
         }
 
-        $result = $this->request('AssetPairs', $data);
-
-        return (new PairCollection($result))->map(function ($information, $pair) {
-            return new Pair($pair, $information);
-        });
+        return (array)$this->request(
+            'public/Assets',
+            AssetInfoResponse::class,
+            $params
+        )->result;
     }
 
-    /**
-     * Get ticker information
-     *
-     * @param string|array $pair comma delimited list of asset pairs to get info on
-     * @return TickerCollection|Ticker[]
-     * @throws KrakenApiErrorException
-     */
-    public function getTicker($pair): TickerCollection
+    /** @inheritDoc */
+    public function getTradableAssetPairs(AssetPair $pair, ?TradableInfo $info = null): array
     {
-        if (is_array($pair)) {
-            $pair = implode(',', $pair);
+        $params = [
+            'pair' => (string)$pair
+        ];
+
+        if ($info) {
+            $params['info'] = (string)$info;
         }
 
-        $result = $this->request('Ticker', ['pair' => $pair]);
-
-        return (new TickerCollection($result))->map(function ($information, $pair) {
-            return new Ticker($pair, $information);
-        });
+        return (array)$this->request(
+            'public/AssetPairs',
+            TradableAssetPairsResponse::class,
+            $params
+        )->result;
     }
 
-    /**
-     * Get account balance
-     *
-     * @return BalanceCollection|Balance[]
-     * @throws KrakenApiErrorException
-     */
-    public function getAccountBalance(): BalanceCollection
+    /** @inheritDoc */
+    public function getTickerInformation(array $pairs): array
     {
-        $result = $this->request('Balance', [], false);
-
-        return (new BalanceCollection($result))->map(function ($amount, $currency) {
-            return new Balance($currency, $amount);
-        });
+        return (array)$this->request('public/Ticker', TickerInformationResponse::class, [
+            'pair' => implode(',', $pairs)
+        ])->result;
     }
 
-    /**
-     * Get trade balance
-     *
-     * @return array
-     * @throws KrakenApiErrorException
-     */
-    public function getTradeBalance(): array
+    /** @inheritDoc */
+    public function getOrderBook(array $pairs, int $count = 100): array
     {
-        return $this->request('TradeBalance', [], false);
+        return (array)$this->request('public/Depth', OrderBookResponse::class, [
+            'pair' => implode(',', $pairs),
+            'count' => $count
+        ])->result;
     }
 
-    /**
-     * Get open orders
-     *
-     * @param bool $trades Whether or not to include trades in output
-     * @return OrdersCollection
-     * @throws KrakenApiErrorException
-     */
-    public function getOpenOrders(bool $trades = false): OrdersCollection
+    /** @inheritDoc */
+    public function getAccountBalance(): array
     {
-        $orders = $this->request('OpenOrders', ['trades' => $trades], false);
-
-        return $this->makeCollection(
-            $orders['open']
-        );
+        return (array)$this->request('private/Balance', AccountBalanceResponse::class)->result;
     }
 
-    /**
-     * Get closed orders
-     *
-     * @param bool $trades Whether or not to include trades in output
-     * @param Carbon|null $start Starting date
-     * @param Carbon|null $end Ending date
-     * @return OrdersCollection
-     * @throws KrakenApiErrorException
-     */
-    public function getClosedOrders(bool $trades = false, Carbon $start = null, Carbon $end = null): OrdersCollection
+    /** @inheritDoc */
+    public function getTradeBalance(string $asset = 'ZUSD'): TradeBalance
     {
-        $parameters = ['trades' => $trades];
+        return $this->request('private/TradeBalance', TradeBalanceResponse::class, [
+            'asset' => $asset
+        ])->result;
+    }
+
+    /** @inheritDoc */
+    public function getOpenOrders(bool $trades = false, ?int $userRef = null): array
+    {
+        $params = [
+            'trades' => $trades
+        ];
+
+        if ($userRef) {
+            $params['userref'] = $userRef;
+        }
+
+        return (array)$this->request(
+            'private/OpenOrders',
+            OpenOrdersResponse::class,
+            $params
+        )->result?->open;
+    }
+
+    /** @inheritDoc */
+    public function getClosedOrders(
+        DateTimeInterface|string|null $start = null,
+        DateTimeInterface|string|null $end = null,
+        ?string $closeTime = null,
+        ?int $offset = null,
+        bool $trades = false,
+        ?int $userRef = null
+    ): ClosedOrders
+    {
+        $params = [
+            'trades' => $trades
+        ];
+
+        if ($userRef) {
+            $params['userref'] = $userRef;
+        }
 
         if ($start) {
-            $parameters['start'] = $start->timestamp;
+            $params['start'] = $start instanceof DateTimeInterface ? $start->getTimestamp() : $start;
         }
 
         if ($end) {
-            $parameters['end'] = $end->timestamp;
+            $params['end'] = $end instanceof DateTimeInterface ? $end->getTimestamp() : $end;
         }
 
-        $orders = $this->request('ClosedOrders', $parameters, false);
+        if ($offset) {
+            $params['ofs'] = $offset;
+        }
 
-        return $this->makeCollection(
-            $orders['closed']
-        );
+        if ($closeTime) {
+            $params['closetime'] = $closeTime;
+        }
+
+        return $this->request(
+            'private/ClosedOrders',
+            ClosedOrdersResponse::class,
+            $params
+        )->result;
     }
 
-    /**
-     * Add standard order
-     *
-     * @param OrderContract $order
-     * @return OrderStatus
-     * @throws KrakenApiErrorException
-     */
-    public function addOrder(OrderContract $order): OrderStatus
+    /** @inheritDoc */
+    public function queryOrdersInfo(array $txIds, bool $trades = false, ?int $userRef = null): array
     {
-        $result = $this->request('AddOrder', $order->toArray(), false);
+        Assert::minCount($txIds, 1, 'Min 1 ID of transactions');
+        Assert::maxCount($txIds, 20, 'Max 20 IDs of transactions');
 
-        return new OrderStatus($result['txid'][0], $result['descr']);
+        $params = [
+            'trades' => $trades,
+            'txid' => implode(',', $txIds)
+        ];
+
+        if ($userRef) {
+            $params['userref'] = $userRef;
+        }
+
+        return (array)$this->request(
+            'private/QueryOrders',
+            QueryOrdersResponse::class,
+            $params
+        )->result;
     }
 
-    /**
-     * Cancel open order
-     *
-     * @param string $transactionId
-     * @return array
-     * @throws KrakenApiErrorException
-     */
-    public function cancelOrder(string $transactionId): array
+    /** @inheritDoc */
+    public function addOrder(AddOrderRequest $request): OrderAdded
     {
-        return $this->request('CancelOrder', ['txid' => $transactionId], false);
+        return $this->request(
+            'private/AddOrder',
+            AddOrderResponse::class,
+            $request->toArray()
+        )->result;
+    }
+
+    /** @inheritDoc */
+    public function cancelOrder(int|string $txId): int
+    {
+        return $this->request(
+            'private/CancelOrder',
+            CancelOrderResponse::class,
+            ['txid' => $txId]
+        )->result->count;
+    }
+
+    /** @inheritDoc */
+    public function cancelAllOrders(): int
+    {
+        return $this->request(
+            'private/CancelAll',
+            CancelOrderResponse::class
+        )->result->count;
+    }
+
+    /** @inheritDoc */
+    public function cancelAllOrdersAfter(int $timeout): CancelOrdersAfterTimeout
+    {
+        return $this->request(
+            'private/CancelAllOrdersAfter',
+            CancelOrdersAfterTimeoutResponse::class,
+            ['timeout' => $timeout]
+        )->result;
+    }
+
+    /** @inheritDoc */
+    public function getWebsocketsToken(): WebsocketToken
+    {
+        return $this->request(
+            'private/GetWebSocketsToken',
+            GetWebSocketsTokenResponse::class
+        )->result;
     }
 
     /**
      * Make request
      *
-     * @param string $method
-     * @param array $parameters
-     * @param bool $isPublic
-     * @return array
-     * @throws KrakenApiErrorException
+     * @param string $method API Endpoint
+     * @param string $responsePayload Payload Class
+     * @param array $parameters Request data
+     * @return Response
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function request(string $method, array $parameters = [], bool $isPublic = true): array
+    public function request(string $method, string $responsePayload, array $parameters = []): Response
     {
-        $headers = ['User-Agent' => 'Kraken PHP API Agent'];
+        $headers = ['User-Agent' => self::API_USER_AGENT];
+        $isPublic = Str::startsWith($method, 'public/');
 
         if (!$isPublic) {
             if ($this->otp) {
                 $parameters['otp'] = $this->otp;
             }
 
-            $parameters['nonce'] = $this->generateNonce();
-
+            $parameters['nonce'] = $this->nonce->generate();
             $headers['API-Key'] = $this->key;
-            $headers['API-Sign'] = $this->generateSign($method, $parameters);
+            $headers['API-Sign'] = $this->makeSignature($method, $parameters);
         }
 
-        $result = $this->sendRequest($method, $parameters, $isPublic, $headers);
 
-        if (!empty($result['error'])) {
-            throw new KrakenApiErrorException(implode(', ', $result['error']));
+        $response = $this->client->request('POST', self::API_URL . $this->buildPath($method), [
+            'headers' => $headers,
+            'form_params' => $parameters,
+            'verify' => true
+        ]);
+
+        $responseObject = $this->serializer->deserialize(
+            $response->getBody()->getContents(),
+            $responsePayload,
+            'json'
+        );
+
+        if ($responseObject->hasErrors()) {
+            throw KrakenApiErrorException::fromArray($responseObject->error);
         }
 
-        return $result['result'];
+        return $responseObject;
     }
 
     /**
      * @param string $method
-     * @param bool $isPublic
      * @return string
      */
-    protected function buildUrl(string $method, bool $isPublic = true): string
+    private function buildPath(string $method): string
     {
-        return static::API_URL . $this->buildPath($method, $isPublic);
-    }
-
-    /**
-     * @param string $method
-     * @param bool $isPublic
-     * @return string
-     */
-    protected function buildPath(string $method, bool $isPublic = true): string
-    {
-        $queryType = $isPublic ? 'public' : 'private';
-
-        return '/' . static::API_VERSION . '/' . $queryType . '/' . $method;
+        return '/' . self::API_VERSION . '/' . $method;
     }
 
     /**
@@ -266,74 +333,17 @@ class Client implements Contracts\Client
      * @param array $parameters
      * @return string
      */
-    protected function generateSign(string $method, array $parameters = []): string
+    private function makeSignature(string $method, array $parameters = []): string
     {
         $queryString = http_build_query($parameters, '', '&');
 
-        return base64_encode(
-            hash_hmac(
-                'sha512',
-                $this->buildPath($method, false) . hash('sha256', $parameters['nonce'] . $queryString, true),
-                base64_decode($this->secret),
-                true
-            )
-        );
-    }
-
-    /**
-     * Generate a 64 bit nonce using a timestamp at microsecond resolution
-     * string functions are used to avoid problems on 32 bit systems
-     *
-     * @return string
-     */
-    protected function generateNonce(): string
-    {
-        $nonce = explode(' ', microtime());
-        return $nonce[1] . str_pad(substr($nonce[0], 2, 6), 6, '0');
-    }
-
-    /**
-     * Decode json response from Kraken API
-     *
-     * @param $response
-     * @return array
-     */
-    protected function decodeResult($response): array
-    {
-        return \GuzzleHttp\json_decode(
-            $response,
+        $signature = hash_hmac(
+            'sha512',
+            $this->buildPath($method) . hash('sha256', $parameters['nonce'] . $queryString, true),
+            base64_decode($this->secret),
             true
         );
-    }
 
-    /**
-     * @param array $orders
-     * @return OrdersCollection
-     */
-    protected function makeCollection(array $orders): OrdersCollection
-    {
-        return (new OrdersCollection($orders))->map(function ($order, $txid) {
-            return new Objects\Order($txid, $order);
-        });
-    }
-
-    /**
-     * @param string $method
-     * @param array $parameters
-     * @param bool $isPublic
-     * @param $headers
-     * @return array
-     */
-    protected function sendRequest(string $method, array $parameters, bool $isPublic, $headers): array
-    {
-        $response = $this->client->post($this->buildUrl($method, $isPublic), [
-            'headers' => $headers,
-            'form_params' => $parameters,
-            'verify' => true
-        ]);
-
-        return $this->decodeResult(
-            $response->getBody()->getContents()
-        );
+        return base64_encode($signature);
     }
 }
