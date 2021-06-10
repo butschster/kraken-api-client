@@ -6,7 +6,7 @@ This is an unofficial Kraken.com PHP8.0 package, which should help users very qu
 Of course, the primary feature of this package is the ability to interact with [Kraken REST API](https://docs.kraken.com/rest/), but also it allows connecting to [Kraken Websocket server](https://docs.kraken.com/websockets/).
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dbutschster%26type%3Dpatrons&style=flat)](https://patreon.com/butschster)
-[![Build Status](https://travis-ci.org/butschster/kraken-api-client.svg)](https://travis-ci.org/butschster/kraken-api-client)
+[![Build Status](https://github.com/butschster/kraken-api-client/actions/workflows/php.yml/badge.svg)](https://github.com/butschster/kraken-api-client/actions/workflows/php.yml)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/butschster/kraken-api-client)](https://packagist.org/packages/butschster/kraken-api-client)
 [![License](https://poser.pugx.org/butschster/meta-tags/license)](https://packagist.org/packages/butschster/kraken-api-client)
 
