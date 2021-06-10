@@ -1,4 +1,4 @@
-name: PHP Composer
+name: unittests
 
 on:
   push:
