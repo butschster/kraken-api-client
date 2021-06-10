@@ -1,7 +1,7 @@
 {
   "name": "butschster/kraken-api-client",
   "type": "library",
-  "description": "REST API / Websocket client for Kraken.com",
+  "description": "The most powerful and extendable REST API / Websocket client for Kraken.com. Built on PHP8.0",
   "keywords": [
     "laravel",
     "php",

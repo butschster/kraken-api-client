@@ -1,6 +1,6 @@
 ![kraken](https://user-images.githubusercontent.com/773481/121415892-dc088c80-c970-11eb-9ce2-66de76749a44.jpg)
 
-# A PHP\Laravel package for interfacing with the Kraken REST API (kraken.com). Built on PHP8.0
+# The most powerful and extendable REST API / Websocket client for Kraken.com. Built on PHP8.0
 
 This is an unofficial Kraken.com PHP8.0 package, which should help users very quickly connect to API from their Laravel or other php project.
 Of course, the primary feature of this package is the ability to interact with [Kraken REST API](https://docs.kraken.com/rest/), but also it allows connecting to [Kraken Websocket server](https://docs.kraken.com/websockets/).
