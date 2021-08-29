@@ -26,7 +26,8 @@
     "illuminate/support": "^8",
     "jms/serializer": "^3.12",
     "brick/money": "^0.5.2",
-    "ratchet/pawl": "^0.3.5"
+    "ratchet/pawl": "^0.3.5",
+    "webmozart/assert": "^1.10"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
