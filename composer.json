@@ -23,7 +23,7 @@
   "require": {
     "php": "^8.0",
     "guzzlehttp/guzzle": "^7.0",
-    "illuminate/support": "^8",
+    "illuminate/support": "^8|^9.0",
     "jms/serializer": "^3.12",
     "brick/money": "^0.5.2",
     "ratchet/pawl": "^0.3.5",

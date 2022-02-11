@@ -18,7 +18,7 @@ Of course, the primary feature of this package is the ability to interact with [
 
 
 ## Requirements
-- Laravel 8.x or other framework
+- Laravel 8.x, Laravel 9.x, or other framework
 - PHP 8.0 and above
 
 ## Installation
@@ -27,8 +27,8 @@ Require this package with composer using the following command:
 
 ## Using
 
-### Laravel 8.0+
-If you're using Laravel 8.0 or above, the package will automatically register the KrakenServiceProvider.
+### Laravel Autodiscovery
+If you're using Laravel 8.0+ or Laravel 9.0+, the package will automatically register the KrakenServiceProvider.
 
 ### Other PHP frameworks
 
