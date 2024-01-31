@@ -72,13 +72,13 @@ final class Client implements Contracts\Client
     /** @inheritDoc */
     public function getServerTime(): ServerTime
     {
-        return $this->request('public/Time', ServerTimeResponse::class)->result;
+        return $this->request('public/Time', ServerTimeResponse::class, 'GET')->result;
     }
 
     /** @inheritDoc */
     public function getSystemStatus(): SystemStatus
     {
-        return $this->request('public/SystemStatus', SystemStatusResponse::class)->result;
+        return $this->request('public/SystemStatus', SystemStatusResponse::class, 'GET')->result;
     }
 
     /** @inheritDoc */
@@ -95,7 +95,8 @@ final class Client implements Contracts\Client
         return (array) $this->request(
             'public/Assets',
             AssetInfoResponse::class,
-            $params
+            $params,
+            'GET'
         )->result;
     }
 
@@ -113,7 +114,8 @@ final class Client implements Contracts\Client
         return (array) $this->request(
             'public/AssetPairs',
             TradableAssetPairsResponse::class,
-            $params
+            $params,
+            'GET'
         )->result;
     }
 
@@ -131,7 +133,7 @@ final class Client implements Contracts\Client
         return (array) $this->request('public/Depth', OrderBookResponse::class, [
             'pair'  => implode(',', $pairs),
             'count' => $count,
-        ])->result;
+        ], 'GET')->result;
     }
 
     /** @inheritDoc */
@@ -339,12 +341,23 @@ final class Client implements Contracts\Client
             $headers['API-Sign'] = $this->makeSignature($method, $parameters);
         }
 
+        switch ($requestMethod) {
+            case 'GET':
+                $response = $this->client->request($requestMethod, self::API_URL . $this->buildPath($method), [
+                    'headers' => $headers,
+                    'query'   => $parameters,
+                    'verify'  => true,
+                ]);
+                break;
 
-        $response = $this->client->request($requestMethod, self::API_URL . $this->buildPath($method), [
-            'headers'     => $headers,
-            'form_params' => $parameters,
-            'verify'      => true,
-        ]);
+            default:
+                $response = $this->client->request($requestMethod, self::API_URL . $this->buildPath($method), [
+                    'headers'     => $headers,
+                    'form_params' => $parameters,
+                    'verify'      => true,
+                ]);
+        }
+
 
         $responseObject = $this->serializer->deserialize(
             $response->getBody()->getContents(),
