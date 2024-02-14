@@ -33,7 +33,8 @@ use Butschster\Kraken\Responses\{AccountBalanceResponse,
     TickerInformationResponse,
     TradableAssetPairsResponse,
     TradeBalanceResponse,
-    WithdrawalInformationResponse};
+    WithdrawalInformationResponse
+};
 use Butschster\Kraken\ValueObjects\{
     AssetClass, AssetPair, TradableInfo
 };
@@ -46,17 +47,17 @@ use Webmozart\Assert\Assert;
 
 final class Client implements Contracts\Client
 {
-    private const API_URL = 'https://api.kraken.com';
-    private const API_VERSION = 0;
+    private const API_URL        = 'https://api.kraken.com';
+    private const API_VERSION    = 0;
     private const API_USER_AGENT = 'Kraken PHP API Agent';
 
     /**
-     * @param HttpClient $client
-     * @param NonceGenerator $nonce
-     * @param SerializerInterface $serializer
-     * @param string $key API key
-     * @param string $secret API secret
-     * @param string|null $otp Two-factor password (if two-factor enabled, otherwise not required)
+     * @param  HttpClient  $client
+     * @param  NonceGenerator  $nonce
+     * @param  SerializerInterface  $serializer
+     * @param  string  $key  API key
+     * @param  string  $secret  API secret
+     * @param  string|null  $otp  Two-factor password (if two-factor enabled, otherwise not required)
      */
     public function __construct(
         private HttpClient $client,
@@ -65,37 +66,37 @@ final class Client implements Contracts\Client
         private string $key,
         private string $secret,
         private ?string $otp = null
-    )
-    {
+    ) {
     }
 
     /** @inheritDoc */
     public function getServerTime(): ServerTime
     {
-        return $this->request('public/Time', ServerTimeResponse::class)->result;
+        return $this->request('public/Time', ServerTimeResponse::class, 'GET')->result;
     }
 
     /** @inheritDoc */
     public function getSystemStatus(): SystemStatus
     {
-        return $this->request('public/SystemStatus', SystemStatusResponse::class)->result;
+        return $this->request('public/SystemStatus', SystemStatusResponse::class, 'GET')->result;
     }
 
     /** @inheritDoc */
     public function getAssetInfo(array $assets = ['all'], ?AssetClass $class = null): array
     {
         $params = [
-            'asset' => implode(',', $assets)
+            'asset' => implode(',', $assets),
         ];
 
         if ($class) {
-            $params['aclass'] = (string)$class;
+            $params['aclass'] = (string) $class;
         }
 
-        return (array)$this->request(
+        return (array) $this->request(
             'public/Assets',
             AssetInfoResponse::class,
-            $params
+            $params,
+            'GET'
         )->result;
     }
 
@@ -103,48 +104,49 @@ final class Client implements Contracts\Client
     public function getTradableAssetPairs(AssetPair $pair, ?TradableInfo $info = null): array
     {
         $params = [
-            'pair' => (string)$pair
+            'pair' => (string) $pair,
         ];
 
         if ($info) {
-            $params['info'] = (string)$info;
+            $params['info'] = (string) $info;
         }
 
-        return (array)$this->request(
+        return (array) $this->request(
             'public/AssetPairs',
             TradableAssetPairsResponse::class,
-            $params
+            $params,
+            'GET'
         )->result;
     }
 
     /** @inheritDoc */
     public function getTickerInformation(array $pairs): array
     {
-        return (array)$this->request('public/Ticker', TickerInformationResponse::class, [
-            'pair' => implode(',', $pairs)
-        ])->result;
+        return (array) $this->request('public/Ticker', TickerInformationResponse::class, [
+            'pair' => implode(',', $pairs),
+        ], 'GET')->result;
     }
 
     /** @inheritDoc */
     public function getOrderBook(array $pairs, int $count = 100): array
     {
-        return (array)$this->request('public/Depth', OrderBookResponse::class, [
-            'pair' => implode(',', $pairs),
-            'count' => $count
-        ])->result;
+        return (array) $this->request('public/Depth', OrderBookResponse::class, [
+            'pair'  => implode(',', $pairs),
+            'count' => $count,
+        ], 'GET')->result;
     }
 
     /** @inheritDoc */
     public function getAccountBalance(): array
     {
-        return (array)$this->request('private/Balance', AccountBalanceResponse::class)->result;
+        return (array) $this->request('private/Balance', AccountBalanceResponse::class)->result;
     }
 
     /** @inheritDoc */
     public function getTradeBalance(string $asset = 'ZUSD'): TradeBalance
     {
         return $this->request('private/TradeBalance', TradeBalanceResponse::class, [
-            'asset' => $asset
+            'asset' => $asset,
         ])->result;
     }
 
@@ -152,14 +154,14 @@ final class Client implements Contracts\Client
     public function getOpenOrders(bool $trades = false, ?int $userRef = null): array
     {
         $params = [
-            'trades' => $trades
+            'trades' => $trades,
         ];
 
         if ($userRef) {
             $params['userref'] = $userRef;
         }
 
-        return (array)$this->request(
+        return (array) $this->request(
             'private/OpenOrders',
             OpenOrdersResponse::class,
             $params
@@ -174,10 +176,9 @@ final class Client implements Contracts\Client
         ?int $offset = null,
         bool $trades = false,
         ?int $userRef = null
-    ): ClosedOrders
-    {
+    ): ClosedOrders {
         $params = [
-            'trades' => $trades
+            'trades' => $trades,
         ];
 
         if ($userRef) {
@@ -215,14 +216,14 @@ final class Client implements Contracts\Client
 
         $params = [
             'trades' => $trades,
-            'txid' => implode(',', $txIds)
+            'txid'   => implode(',', $txIds),
         ];
 
         if ($userRef) {
             $params['userref'] = $userRef;
         }
 
-        return (array)$this->request(
+        return (array) $this->request(
             'private/QueryOrders',
             QueryOrdersResponse::class,
             $params
@@ -285,9 +286,9 @@ final class Client implements Contracts\Client
             'private/DepositAddresses',
             DepositAddressesResponse::class,
             [
-                'asset' => $asset,
+                'asset'  => $asset,
                 'method' => $method,
-                'new' => $new
+                'new'    => $new,
             ]
         )->result;
     }
@@ -308,9 +309,9 @@ final class Client implements Contracts\Client
             'private/WithdrawInfo',
             WithdrawalInformationResponse::class,
             [
-                'asset' => $asset,
-                'key' => $key,
-                'amount' => (string) $amount
+                'asset'  => $asset,
+                'key'    => $key,
+                'amount' => (string) $amount,
             ]
         )->result;
     }
@@ -318,15 +319,16 @@ final class Client implements Contracts\Client
     /**
      * Make request
      *
-     * @param string $method API Endpoint
-     * @param string $responsePayload Payload Class
-     * @param array $parameters Request data
+     * @param  string  $method  API Endpoint
+     * @param  string  $responsePayload  Payload Class
+     * @param  array  $parameters  Request data
+     * @param  string  $requestMethod  Request Method to use default: POST
      * @return Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function request(string $method, string $responsePayload, array $parameters = []): Response
+    public function request(string $method, string $responsePayload, array $parameters = [], $requestMethod = 'POST'): Response
     {
-        $headers = ['User-Agent' => self::API_USER_AGENT];
+        $headers  = ['User-Agent' => self::API_USER_AGENT];
         $isPublic = Str::startsWith($method, 'public/');
 
         if (!$isPublic) {
@@ -335,16 +337,27 @@ final class Client implements Contracts\Client
             }
 
             $parameters['nonce'] = $this->nonce->generate();
-            $headers['API-Key'] = $this->key;
+            $headers['API-Key']  = $this->key;
             $headers['API-Sign'] = $this->makeSignature($method, $parameters);
         }
 
+        switch ($requestMethod) {
+            case 'GET':
+                $response = $this->client->request($requestMethod, self::API_URL . $this->buildPath($method), [
+                    'headers' => $headers,
+                    'query'   => $parameters,
+                    'verify'  => true,
+                ]);
+                break;
 
-        $response = $this->client->request('POST', self::API_URL . $this->buildPath($method), [
-            'headers' => $headers,
-            'form_params' => $parameters,
-            'verify' => true
-        ]);
+            default:
+                $response = $this->client->request($requestMethod, self::API_URL . $this->buildPath($method), [
+                    'headers'     => $headers,
+                    'form_params' => $parameters,
+                    'verify'      => true,
+                ]);
+        }
+
 
         $responseObject = $this->serializer->deserialize(
             $response->getBody()->getContents(),
@@ -360,7 +373,7 @@ final class Client implements Contracts\Client
     }
 
     /**
-     * @param string $method
+     * @param  string  $method
      * @return string
      */
     private function buildPath(string $method): string
@@ -372,8 +385,8 @@ final class Client implements Contracts\Client
      * Message signature using HMAC-SHA512 of (URI path + SHA256(nonce + POST data))
      * and base64 decoded secret API key
      *
-     * @param string $method
-     * @param array $parameters
+     * @param  string  $method
+     * @param  array  $parameters
      * @return string
      */
     private function makeSignature(string $method, array $parameters = []): string
