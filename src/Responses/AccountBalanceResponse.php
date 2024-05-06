@@ -9,10 +9,8 @@ use JMS\Serializer\Annotation\Accessor;
 
 class AccountBalanceResponse extends AbstractResponse
 {
-    /**
-     * @Type("array")
-     * @Accessor(setter="setBalances")
-     */
+    #[Type("array")]
+    #[Accessor(setter: "setBalances")]
     public ?array $result = null;
 
     public function setBalances(array $assets): void

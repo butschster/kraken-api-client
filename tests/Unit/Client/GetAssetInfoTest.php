@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kraken\Tests\Unit\Client;
@@ -31,7 +32,8 @@ class GetAssetInfoTest extends TestCase
 EOL;
 
         $response = $this->createClient(
-            'https://api.kraken.com/0/public/Assets?asset=XBT%2CETH&aclass=currency', $json
+            urlWithQueryString: 'https://api.kraken.com/0/public/Assets?asset=XBT%2CETH&aclass=currency',
+            json: $json,
         )->getAssetInfo(['XBT', 'ETH'], AssetClass::currency());
 
         $this->assertCount(2, $response);

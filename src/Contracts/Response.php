@@ -6,7 +6,7 @@ namespace Butschster\Kraken\Contracts;
 interface Response
 {
     /**
-     * Check if reponse has errors
+     * Check if response has errors
      */
     public function hasErrors(): bool;
 }

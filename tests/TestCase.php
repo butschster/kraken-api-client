@@ -23,8 +23,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $http->shouldReceive('request')
             ->once()
             ->withArgs(function (string $method, string $url, array $params) use ($urlWithQueryString) {
-                if (!empty($params['form_params'])) {
-                    $url = $url . '?' . http_build_query($params['form_params']);
+                $queryParams = $params['query'] ?? $params['form_params'] ?? [];
+
+                if (!empty($queryParams)) {
+                    $url = $url . '?' . http_build_query($queryParams);
                 }
 
                 $this->assertEquals($urlWithQueryString, $url);

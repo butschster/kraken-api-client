@@ -15,19 +15,19 @@ class WithdrawalInformation
 
     /**
      * Maximum net amount that can be withdrawn right now
-     * @Type("BigDecimal")
      */
+    #[Type(BigDecimal::class)]
     public BigDecimal $limit;
 
     /**
      * Net amount that will be sent, after fees
-     * @Type("BigDecimal")
      */
+    #[Type(BigDecimal::class)]
     public BigDecimal $amount;
 
     /**
      * Amount of fees that will be paid
-     * @Type("BigDecimal")
      */
+    #[Type(BigDecimal::class)]
     public BigDecimal $fee;
 }
