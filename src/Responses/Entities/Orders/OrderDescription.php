@@ -12,52 +12,52 @@ class OrderDescription
 {
     /**
      * Asset pair
-     * @Type("string")
      */
+    #[Type("string")]
     public string $pair;
 
     /**
      * Type of order (buy/sell)
-     * @Type("string")
      */
+    #[Type("string")]
     public string $type;
 
     /**
      * Order type
-     * @Type("string")
-     * @SerializedName("ordertype")
      */
+    #[Type("string")]
+    #[SerializedName("ordertype")]
     public string $orderType;
 
     /**
      * Primary price
-     * @Type("BigDecimal")
      */
+    #[Type(\Brick\Math\BigDecimal::class)]
     public BigDecimal $price;
 
     /**
      * Secondary price
-     * @Type("BigDecimal")
-     * @SerializedName("price2")
      */
+    #[Type(\Brick\Math\BigDecimal::class)]
+    #[SerializedName("price2")]
     public BigDecimal $secondaryPrice;
 
     /**
      * Amount of leverage
-     * @Type("string")
      */
+    #[Type("string")]
     public string $leverage;
 
     /**
      * Order description
-     * @Type("string")
      */
+    #[Type("string")]
     public string $order;
 
     /**
      * Conditional close order description (if conditional close set)
-     * @Type("string")
-     * @SerializedName("close")
      */
+    #[Type("string")]
+    #[SerializedName("close")]
     public string $close = '';
 }

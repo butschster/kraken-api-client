@@ -24,8 +24,8 @@ class SystemStatus
 
     /**
      * Current timestamp (RFC3339)
-     * @Type("DateTimeImmutable")
      */
+    #[Type(DateTimeImmutable::class)]
     public DateTimeImmutable $timestamp;
 
     /**

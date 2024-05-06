@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Butschster\Kraken\Websocket\Requests;
@@ -12,8 +13,8 @@ class Subscribe extends AbstractEvent
     /**
      * Optional - Array of currency pairs. Format of each pair is "A/B", where A and B are ISO 4217-A3 for
      * standardized assets and popular unique symbol if not standardized.
-     * @Type("array<string>")
      */
+    #[Type("array<string>")]
     public array $pair = [];
 
     /**

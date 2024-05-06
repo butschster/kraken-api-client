@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation\Type;
 
 abstract class AbstractResponse implements Response
 {
-    /** @Type("array<string>") */
+    #[Type("array<string>")]
     public ?array $error = null;
 
     public function hasErrors(): bool

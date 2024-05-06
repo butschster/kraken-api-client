@@ -7,8 +7,6 @@ use JMS\Serializer\Annotation\Type;
 
 class OpenOrders
 {
-    /**
-     * @Type("array<string, Butschster\Kraken\Responses\Entities\Orders\Order>")
-     */
+    #[Type("array<string, Butschster\Kraken\Responses\Entities\Orders\Order>")]
     public array $open = [];
 }

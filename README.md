@@ -1,8 +1,8 @@
 ![kraken](https://user-images.githubusercontent.com/773481/121415892-dc088c80-c970-11eb-9ce2-66de76749a44.jpg)
 
-# The most powerful and extendable REST API / Websocket client for Kraken.com. Built on PHP8.0
+# The most powerful and extendable REST API / Websocket client for Kraken.com. Built on PHP8.1
 
-This is an unofficial Kraken.com PHP8.0 package, which should help users very quickly connect to API from their Laravel or other php project.
+This is an unofficial Kraken.com PHP8.1 package, which should help users very quickly connect to API from their Laravel or other php project.
 Of course, the primary feature of this package is the ability to interact with [Kraken REST API](https://docs.kraken.com/rest/), but also it allows connecting to [Kraken Websocket server](https://docs.kraken.com/websockets/).
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dbutschster%26type%3Dpatrons&style=flat)](https://patreon.com/butschster)
@@ -18,8 +18,8 @@ Of course, the primary feature of this package is the ability to interact with [
 
 
 ## Requirements
-- Laravel 8.x or other framework
-- PHP 8.0 and above
+- Laravel 8.x, Laravel 9.x, Laravel 10.x, or other framework
+- PHP 8.1 and above
 
 ## Installation
 Require this package with composer using the following command:
@@ -27,8 +27,8 @@ Require this package with composer using the following command:
 
 ## Using
 
-### Laravel 8.0+
-If you're using Laravel 8.0 or above, the package will automatically register the KrakenServiceProvider.
+### Laravel Autodiscovery
+If you're using Laravel 8.0+ or above, the package will automatically register the KrakenServiceProvider.
 
 ### Other PHP frameworks
 

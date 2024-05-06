@@ -9,13 +9,13 @@ class CancelOrder
 {
     /**
      * Number of orders cancelled.
-     * @Type("int")
      */
+    #[Type("int")]
     public int $count = 0;
 
     /**
      * if set, order(s) is/are pending cancellation
-     * @Type("bool")
      */
+    #[Type("bool")]
     public ?bool $pending = null;
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Butschster\Kraken\Responses\Entities\OrderBook;
@@ -10,18 +11,18 @@ class Orders
 {
     /**
      * Ask side array of entries [<price>, <volume>, <timestamp>]
-     * @Type("array")
-     * @Accessor(setter="setAsks")
      * @var Order[]
      */
+    #[Type("array")]
+    #[Accessor(setter: "setAsks")]
     public array $asks = [];
 
     /**
      * Bid side array of entries [<price>, <volume>, <timestamp>]
-     * @Type("array")
-     * @Accessor(setter="setBids")
      * @var Order[]
      */
+    #[Type("array")]
+    #[Accessor(setter: "setBids")]
     public array $bids = [];
 
     public function setAsks(array $orders): void

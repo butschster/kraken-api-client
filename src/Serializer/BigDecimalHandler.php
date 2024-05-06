@@ -18,7 +18,7 @@ class BigDecimalHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
                 'format' => 'json',
-                'type' => 'BigDecimal',
+                'type' => BigDecimal::class,
                 'method' => 'deserialize',
             ],
         ];

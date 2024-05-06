@@ -11,9 +11,9 @@ class ServerTime
 {
     /**
      * Unix timestamp
-     * @SerializedName("unixtime")
-     * @Type("Timestamp")
      */
+    #[SerializedName("unixtime")]
+    #[Type("Timestamp")]
     public DateTimeInterface $time;
 
     /**
