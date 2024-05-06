@@ -13,7 +13,7 @@ jobs:
       matrix:
         php: [ '8.1', '8.2', '8.3' ]
         os: [ 'ubuntu-latest' ]
-        stability: [ 'prefer-stable' ]
+        stability: [ 'prefer-lowest', 'prefer-stable' ]
 
     steps:
       # General Steps
