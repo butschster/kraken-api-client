@@ -9,13 +9,13 @@ class Description
 {
     /**
      * Order description
-     * @Type("string")
      */
+    #[Type("string")]
     public string $order;
 
     /**
      * Conditional close order description, if applicable
-     * @Type("string")
      */
+    #[Type("string")]
     public string $close = '';
 }

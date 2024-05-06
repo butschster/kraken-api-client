@@ -10,14 +10,14 @@ class OrderAdded
 {
     /**
      * Order description info
-     * @SerializedName("descr")
      */
+    #[SerializedName("descr")]
     public Description $description;
 
     /**
      * Transaction IDs for order
-     * @Type("array<string>")
-     * @SerializedName("txid")
      */
+    #[Type("array<string>")]
+    #[SerializedName("txid")]
     public array $txId = [];
 }

@@ -11,14 +11,14 @@ class WebsocketToken
 {
     /**
      * Websockets token
-     * @Type("string")
      */
+    #[Type("string")]
     public string $token;
 
     /**
      * Time (in seconds) after which the token expires
-     * @Type("int")
      */
+    #[Type("int")]
     public int $expires;
 
     /**

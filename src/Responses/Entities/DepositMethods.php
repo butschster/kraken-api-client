@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Butschster\Kraken\Responses\Entities;
@@ -12,35 +13,35 @@ class DepositMethods
 {
     /**
      * Name of deposit method
-     * @Type("string")
      */
+    #[Type("string")]
     public string $method;
 
     /**
      * Maximum net amount that can be deposited right now, or false if no limit
-     * @Accessor(setter="setLimit")
-     * @Type("string")
      */
+    #[Type("string")]
+    #[Accessor(setter: "setLimit")]
     public bool|string $limit;
 
     /**
      * Amount of fees that will be paid
-     * @Type("BigDecimal")
      */
+    #[Type(BigDecimal::class)]
     public BigDecimal $fee;
 
     /**
      * Whether or not method has an address setup fee
-     * @SerializedName("address-setup-fee")
-     * @Type("string")
      */
+    #[SerializedName("address-setup-fee")]
+    #[Type("string")]
     public ?string $addressSetupFee = null;
 
     /**
      * Whether new addresses can be generated for this method.
-     * @SerializedName("gen-address")
-     * @Type("bool")
      */
+    #[SerializedName("gen-address")]
+    #[Type("bool")]
     public bool $generatedAddress;
 
     public function setLimit(string $limit): void

@@ -8,8 +8,8 @@ class AssetInfo
 {
     /**
      * Asset class
-     * @SerializedName("aclass")
      */
+    #[SerializedName("aclass")]
     public string $class;
 
     /**
@@ -24,7 +24,7 @@ class AssetInfo
 
     /**
      * Scaling decimal places for output display
-     * @SerializedName("display_decimals")
      */
+    #[SerializedName("display_decimals")]
     public int $displayDecimals;
 }

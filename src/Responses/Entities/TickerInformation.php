@@ -14,71 +14,65 @@ use JMS\Serializer\Annotation\Accessor;
 
 class TickerInformation
 {
-    /**
-     * @Type("array<string>")
-     * @SerializedName("a")
-     * @Accessor(setter="setAsk")
-     */
+    #[Type("array<string>")]
+    #[SerializedName("a")]
+    #[Accessor(setter: "setAsk")]
     public LotPrice $ask;
 
-    /**
-     * @Type("array<string>")
-     * @SerializedName("b")
-     * @Accessor(setter="setBid")
-     */
+    #[Type("array<string>")]
+    #[SerializedName("b")]
+    #[Accessor(setter: "setBid")]
     public LotPrice $bid;
 
-    /**
-     * @Type("BigDecimal")
-     * @SerializedName("o")
-     */
+    #[Type(BigDecimal::class)]
+    #[SerializedName("o")]
     public BigDecimal $openingPrice;
 
     /**
      * Last trade closed [<price>, <lot volume>]
-     * @SerializedName("c")
-     * @Type("array<string>")
      */
+    #[SerializedName("c")]
+    #[Type("array<string>")]
     public array $lastTradeClosed = [];
 
     /**
      * Volume [<today>, <last 24 hours>]
-     * @SerializedName("v")
-     * @Accessor(setter="setVolume")
-     * @Type("array<string>")
      */
+    #[SerializedName("v")]
+    #[Type("array<string>")]
+    #[Accessor(setter: "setVolume")]
     public Volume $volume;
 
     /**
      * Volume weighted average price [<today>, <last 24 hours>]
-     * @SerializedName("p")
-     * @Accessor(setter="setVolumeWightedAveragePrice")
-     * @Type("array<string>")
      */
+    #[SerializedName("p")]
+    #[Type("array<string>")]
+    #[Accessor(setter: "setVolumeWightedAveragePrice")]
     public Volume $volumeWightedAveragePrice;
 
     /**
      * Number of trades [<today>, <last 24 hours>]
-     * @SerializedName("t")
-     * @Accessor(setter="setTrades")
-     * @Type("array<int>")
      */
+    #[SerializedName("t")]
+    #[Type("array<int>")]
+    #[Accessor(setter: "setTrades")]
     public Trades $trades;
 
     /**
      * Low [<today>, <last 24 hours>]
-     * @SerializedName("l")
-     * @Type("array<string>")
-     * @Accessor(setter="setLow")
      */
+    #[SerializedName("l")]
+    #[Type("array<string>")]
+    #[Accessor(setter: "setLow")]
     public Price $low;
 
     /**
      * High [<today>, <last 24 hours>]
-     * @SerializedName("h")
-     * @Type("array<string>")
-     * @Accessor(setter="setHigh")
      */
+    #[SerializedName("h")]
+    #[Type("array<string>")]
+    #[Accessor(setter: "setHigh")]
     public Price $high;
 
     public function setAsk(array $ask): void
