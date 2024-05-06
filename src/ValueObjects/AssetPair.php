@@ -5,9 +5,15 @@ namespace Butschster\Kraken\ValueObjects;
 
 class AssetPair
 {
+    /**
+     * @param string $asset1
+     * @param string|null $asset2
+     * @param string[] $assets
+     */
     public function __construct(
         private string $asset1,
-        private string $asset2
+        private ?string $asset2 = null,
+        private array $assets = [],
     )
     {
     }
@@ -21,11 +27,19 @@ class AssetPair
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getAsset2(): string
+    public function getAsset2(): ?string
     {
         return $this->asset2;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAssets(): array
+    {
+        return $this->assets;
     }
 
     final public function equals(self $pair): bool
@@ -35,6 +49,10 @@ class AssetPair
 
     public function __toString(): string
     {
-        return sprintf('%s,%s', $this->asset1, $this->asset2);
+        $assets = [$this->asset1];
+        if($this->asset2 !== null)
+            $assets[] = $this->asset2;
+
+        return implode(',', array_merge($assets,$this->assets));
     }
 }
